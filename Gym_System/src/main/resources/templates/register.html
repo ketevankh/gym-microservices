@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registration Page</title>
+</head>
+<body>
+    <h2>Register as:</h2>
+    <form action="/trainees" method="post">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+        <input type="submit" value="Trainee">
+    </form>
+    <form action="/trainers" method="post">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+        <input type="submit" value="Trainer">
+    </form>
+</body>
+</html>
