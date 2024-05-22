@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Gym_System/Task_Hibernate.iml" filepath="$PROJECT_DIR$/Gym_System/Task_Hibernate.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/gym-microservices.iml" filepath="$PROJECT_DIR$/.idea/gym-microservices.iml" />
     </modules>
   </component>

@@ -6,6 +6,7 @@
       <list>
         <option value="$PROJECT_DIR$/Gym_System/pom.xml" />
         <option value="$PROJECT_DIR$/Trainer_Workload/pom.xml" />
+        <option value="$PROJECT_DIR$/EurekaServerApplication/pom.xml" />
       </list>
     </option>
   </component>
