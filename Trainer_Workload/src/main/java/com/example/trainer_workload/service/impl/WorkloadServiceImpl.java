@@ -7,6 +7,7 @@ import com.example.trainer_workload.service.WorkloadService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class WorkloadServiceImpl implements WorkloadService {
 
     @Override
     public void updateWorkload(WorkloadRequest request) throws Exception {
-        LocalDate localDate = request.getTrainingDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDateTime localDate = request.getTrainingDate();
         Integer year = localDate.getYear();
         Integer month = localDate.getMonthValue();
         Integer duration = request.getTrainingDuration();

@@ -1,6 +1,6 @@
-package com.example.trainer_workload.model.request;
+package com.example.task_hibernate.model.dto.controllerDTOs.request;
 
-import com.example.trainer_workload.model.enums.ActionType;
+import com.example.task_hibernate.model.enums.ActionType;
 import lombok.Data;
 
 import java.time.LocalDateTime;

@@ -7,7 +7,13 @@
         <option value="$PROJECT_DIR$/Gym_System/pom.xml" />
         <option value="$PROJECT_DIR$/Trainer_Workload/pom.xml" />
         <option value="$PROJECT_DIR$/EurekaServerApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/Eureka_Client_demp/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/Eureka_Client_demp/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="openjdk-21" project-jdk-type="JavaSDK">

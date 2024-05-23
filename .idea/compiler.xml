@@ -12,10 +12,14 @@
         <module name="EurekaServerApplication" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Eureka_Client_demp" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="EurekaServerApplication" options="-parameters" />
+      <module name="Eureka_Client_demp" options="-parameters" />
       <module name="Task_Hibernate" options="-parameters" />
       <module name="Trainer_Workload" options="-parameters" />
     </option>
