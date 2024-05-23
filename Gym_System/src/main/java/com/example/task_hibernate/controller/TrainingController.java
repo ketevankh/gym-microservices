@@ -6,6 +6,7 @@ import com.example.task_hibernate.model.dto.controllerDTOs.request.WorkloadReque
 import com.example.task_hibernate.model.enums.ActionType;
 import com.example.task_hibernate.service.TrainingService;
 import com.example.task_hibernate.service.UserService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public class TrainingController {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingController.class);
     private static final String WORKLOAD_SERVICE_URL = "http://workload/update";
+    private static final String UPDATE_WORKLOAD_CIRCUIT_BREAKER = "updateWorkloadCircuitBreaker";
 
     private final TrainingService trainingService;
     private final UserService userService;
@@ -41,6 +43,7 @@ public class TrainingController {
     }
 
     @PostMapping("/addTraining")
+    @CircuitBreaker(name = UPDATE_WORKLOAD_CIRCUIT_BREAKER, fallbackMethod = "updateWorkloadFallback")
     public ResponseEntity<Void> addTraining(@RequestParam String traineeUserName,
                                             @RequestParam String trainerUserName,
                                             @RequestParam String trainingName,@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
@@ -65,15 +68,20 @@ public class TrainingController {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<WorkloadRequest> entity = new HttpEntity<>(request, headers);
-
-            try {
-                restTemplate.postForEntity(WORKLOAD_SERVICE_URL, entity, String.class);
-                logger.info("Successfully called workload service to update workload.");
-            } catch (Exception e) {
-                logger.error("Error while calling workload service: ", e);
-                return ResponseEntity.status(500).build();
-            }
+            restTemplate.postForEntity(WORKLOAD_SERVICE_URL, entity, String.class);
+            logger.info("Successfully called workload service to update workload.");
             return ResponseEntity.ok().build();
         }
+    }
+
+    public ResponseEntity<Void> updateWorkloadFallback(String traineeUserName,
+                                                       String trainerUserName,
+                                                       String trainingName,
+                                                       @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+                                                       LocalDateTime trainingDate,
+                                                       int trainingDuration,
+                                                       Throwable throwable) {
+        logger.error("Error while calling workload service: ", throwable);
+        return ResponseEntity.status(503).build();
     }
 }

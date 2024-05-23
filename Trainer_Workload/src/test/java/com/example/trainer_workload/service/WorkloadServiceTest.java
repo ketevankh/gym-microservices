@@ -10,9 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,7 +35,7 @@ class WorkloadServiceImplTest {
         workloadRequest.setTrainerFirstName("John");
         workloadRequest.setTrainerLastName("Doe");
         workloadRequest.setIsActive(true);
-        workloadRequest.setTrainingDate(Date.from(LocalDate.of(2023, 5, 15).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        workloadRequest.setTrainingDate(LocalDateTime.of(2023, 5, 15, 0, 0));
     }
 
     @Test
