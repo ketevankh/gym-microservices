@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An unexpected error occurred: " + ex.getMessage());
+    }
+
     @ExceptionHandler(AuthenticationFailedException.class)
     protected ResponseEntity<Object> handleAuthenticationFailed(AuthenticationFailedException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
