@@ -14,10 +14,4 @@ public class TaskHibernateApplication {
     public static void main(String[] args) {
         SpringApplication.run(TaskHibernateApplication.class, args);
     }
-
-    @Bean
-    @LoadBalanced
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
 }

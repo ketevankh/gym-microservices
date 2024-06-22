@@ -5,16 +5,26 @@ import com.example.task_hibernate.model.Trainee;
 import com.example.task_hibernate.model.Trainer;
 import com.example.task_hibernate.model.Training;
 import com.example.task_hibernate.model.TrainingType;
+import com.example.task_hibernate.model.dto.controllerDTOs.request.WorkloadRequest;
+import com.example.task_hibernate.model.enums.ActionType;
 import com.example.task_hibernate.model.enums.ExerciseType;
 import com.example.task_hibernate.repository.TraineeRepository;
 import com.example.task_hibernate.repository.TrainerRepository;
 import com.example.task_hibernate.repository.TrainingRepository;
 import com.example.task_hibernate.service.TrainingService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +38,8 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingRepository trainingRepository;
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
+    private final RestTemplate restTemplate;
+
     @Override
     public List<Training> getAllTrainings() {
         return trainingRepository.findAll();
@@ -70,6 +82,9 @@ public class TrainingServiceImpl implements TrainingService {
         training.setDuration(trainingDuration);
         training.setTrainingType(trainer.get().getTrainingType());
         trainingRepository.save(training);
+
+        sendWorkloadUpdate(trainer.get(), trainingDate, trainingDuration, ActionType.ADD);
+
         return true;
     }
 
@@ -86,11 +101,47 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public Boolean deleteTrainingsWithTrainers(String traineeUsername, List<String> trainerUsernames) {
         trainingRepository.deleteByTraineeUserUserNameAndTrainerUserUserNameIn(traineeUsername, trainerUsernames);
+
+        for (String trainerUsername : trainerUsernames) {
+            Optional<Trainer> trainer = trainerRepository.findByUser_Username(trainerUsername);
+            trainer.ifPresent(value -> sendWorkloadUpdate(value, null, 0, ActionType.DELETE));
+        }
+
         return true;
     }
 
     @Override
     public List<TrainingType> getAllTrainingTypes() {
         return trainingRepository.findAllTrainingTypes();
+    }
+
+    @CircuitBreaker(name = "secondaryMicroservice", fallbackMethod = "fallbackSendWorkloadUpdate")
+    public void sendWorkloadUpdate(Trainer trainer, Date trainingDate, int trainingDuration, ActionType actionType) {
+        WorkloadRequest request = new WorkloadRequest();
+        request.setTrainerUsername(trainer.getUser().getUsername());
+        request.setTrainerFirstName(trainer.getUser().getFirstName());
+        request.setTrainerLastName(trainer.getUser().getLastName());
+        request.setIsActive(trainer.getUser().getIsActive());
+        if (trainingDate != null) {
+            request.setTrainingDate(trainingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        }
+        request.setTrainingDuration(trainingDuration);
+        request.setActionType(actionType);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getCredentials() instanceof String) {
+            String jwtToken = (String) authentication.getCredentials();
+            headers.set("Authorization", "Bearer " + jwtToken);
+        }
+
+        HttpEntity<WorkloadRequest> entity = new HttpEntity<>(request, headers);
+        restTemplate.postForEntity("http://localhost:8082/trainers/workload", entity, String.class);
+    }
+
+    public void fallbackSendWorkloadUpdate(Trainer trainer, Date trainingDate, int trainingDuration, ActionType actionType, Throwable throwable) {
+        log.error("Failed to send workload update to secondary microservice for trainer: {} due to: {}", trainer.getUser().getUsername(), throwable.getMessage());
     }
 }

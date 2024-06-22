@@ -74,7 +74,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         Trainee tmpTrainee = traineeRepository.findByUser_Username(credentials.userName()).get();
         Optional<User> updatedUser = userService.updateUser(tmpTrainee.getUser().getId(), trainee.getUser());
-        if (!updatedUser.isPresent()) {
+        if (updatedUser.isEmpty()) {
             log.error("User update failed");
             throw new UpdateFailedException("User update failed");
         }
@@ -90,6 +90,7 @@ public class TraineeServiceImpl implements TraineeService {
     public boolean changeActiveStatus(Boolean isActive, Credentials credentials) {
         userService.validateUserCredentials(credentials);
         Trainee trainee = traineeRepository.findByUser_Username(credentials.userName()).get();
+
         return userService.changeActiveStatus(trainee.getUser().getId(), isActive);
     }
 
@@ -176,13 +177,13 @@ public class TraineeServiceImpl implements TraineeService {
         return traineeTrainingsList;
     }
 
-    private Boolean findTraineeByUsername(String username) {
+    public Boolean findTraineeByUsername(String username) {
         Optional<Trainee> trainee = traineeRepository.findByUser_Username(username);
         if (!trainee.isPresent()) {
             log.error("Trainee with username {} not found, userName)", username);
             throw new ResourceNotFoundException("Trainee with username " + username + " not found");
         }
-        return traineeRepository.findByUser_Username(username).isPresent();
+        return trainee.isPresent();
     }
 
 }

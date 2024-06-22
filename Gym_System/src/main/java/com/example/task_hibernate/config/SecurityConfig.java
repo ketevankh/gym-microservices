@@ -54,12 +54,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
         http
+                .csrf(csrf -> csrf.disable())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .authorizeRequests(authz -> authz
                         .requestMatchers(HttpMethod.GET, "/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/trainees").permitAll()
                         .requestMatchers(HttpMethod.POST, "/trainers").permitAll()
+                        .requestMatchers("/eureka/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin ->
                         formLogin

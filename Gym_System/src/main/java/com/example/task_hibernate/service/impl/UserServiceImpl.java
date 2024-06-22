@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
         return Optional.of(userRepository.save(updateUser));
     }
 
+    //returns true if the status was changed, false if it was already the same
     public boolean changeActiveStatus(Long id, Boolean isActive) {
         User updateUser = findById(id);
         if (updateUser.getIsActive().equals(isActive)) {

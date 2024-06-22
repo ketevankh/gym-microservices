@@ -111,7 +111,7 @@ public class TrainerServiceImpl implements TrainerService {
         return trainingService.getTrainerTrainingsList(userName, from, to, trainerUserName);
     }
 
-    private Boolean findTrainerWithUsername(String username) {
+    public Boolean findTrainerWithUsername(String username) {
         Optional<Trainer> trainer = trainerRepository.findByUser_Username(username);
         if (!trainer.isPresent()) {
             log.error("Trainer with username {} not found, userName)", username);

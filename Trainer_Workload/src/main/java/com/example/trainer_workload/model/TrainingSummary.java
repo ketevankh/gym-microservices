@@ -1,12 +1,13 @@
 package com.example.trainer_workload.model;
 
+import jakarta.persistence.Embeddable;
 import lombok.Data;
 
-import java.util.Date;
 
 @Data
+@Embeddable
 public class TrainingSummary {
-    private String trainingName;
-    private Date trainingDate;
-    private int duration;
+    private int trainingYear;
+    private int trainingMonth;
+    private int trainingDuration;
 }
