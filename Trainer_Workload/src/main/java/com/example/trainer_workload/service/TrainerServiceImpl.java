@@ -14,6 +14,9 @@ public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerRepository trainerRepository;
 
+    private static final String ACTION_ADD = "ADD";
+    private static final String ACTION_DELETE = "DELETE";
+
     @Autowired
     public TrainerServiceImpl(TrainerRepository trainerRepository) {
         this.trainerRepository = trainerRepository;
@@ -36,29 +39,22 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer handleTrainerWorkload(String username, String firstName, String lastName, boolean isActive, LocalDate trainingDate, int trainingDuration, String actionType) {
-        Optional<Trainer> trainerOptional = trainerRepository.findById(username);
-        Trainer trainer;
-        if (trainerOptional.isPresent()) {
-            trainer = trainerOptional.get();
-            trainer.setTrainerFirstName(firstName);
-            trainer.setTrainerLastName(lastName);
-            trainer.setActive(isActive);
-        } else {
-            trainer = new Trainer();
-            trainer.setTrainerUsername(username);
-            trainer.setTrainerFirstName(firstName);
-            trainer.setTrainerLastName(lastName);
-            trainer.setActive(isActive);
-        }
+        Trainer trainer = trainerRepository.findById(username).orElse(new Trainer());
+
+        trainer.setTrainerUsername(username);
+        trainer.setTrainerFirstName(firstName);
+        trainer.setTrainerLastName(lastName);
+        trainer.setActive(isActive);
+
 
         TrainingSummary trainingSummary = new TrainingSummary();
         trainingSummary.setTrainingYear(trainingDate.getYear());
         trainingSummary.setTrainingMonth(trainingDate.getMonthValue());
         trainingSummary.setTrainingDuration(trainingDuration);
 
-        if ("ADD".equalsIgnoreCase(actionType)) {
+        if (ACTION_ADD.equalsIgnoreCase(actionType)) {
             trainer.getTrainingSummary().add(trainingSummary);
-        } else if ("DELETE".equalsIgnoreCase(actionType)) {
+        } else if (ACTION_DELETE.equalsIgnoreCase(actionType)) {
             trainer.getTrainingSummary().removeIf(summary ->
                     summary.getTrainingYear() == trainingSummary.getTrainingYear() &&
                             summary.getTrainingMonth() == trainingSummary.getTrainingMonth() &&
