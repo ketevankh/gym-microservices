@@ -16,14 +16,14 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessagePostProcessor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -35,10 +35,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TrainingServiceImpl implements TrainingService {
 
+    private final JmsTemplate jmsTemplate;
+    private static final String WORKLOAD_QUEUE = "workload.queue";
+
     private final TrainingRepository trainingRepository;
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
-    private final RestTemplate restTemplate;
 
     @Override
     public List<Training> getAllTrainings() {
@@ -128,20 +130,16 @@ public class TrainingServiceImpl implements TrainingService {
         request.setTrainingDuration(trainingDuration);
         request.setActionType(actionType);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getCredentials() instanceof String) {
-            String jwtToken = (String) authentication.getCredentials();
-            headers.set("Authorization", "Bearer " + jwtToken);
-        }
-
-        HttpEntity<WorkloadRequest> entity = new HttpEntity<>(request, headers);
-        restTemplate.postForEntity("http://localhost:8082/trainers/workload", entity, String.class);
-    }
-
-    public void fallbackSendWorkloadUpdate(Trainer trainer, Date trainingDate, int trainingDuration, ActionType actionType, Throwable throwable) {
-        log.error("Failed to send workload update to secondary microservice for trainer: {} due to: {}", trainer.getUser().getUsername(), throwable.getMessage());
+        jmsTemplate.convertAndSend(WORKLOAD_QUEUE, request, new MessagePostProcessor() {
+            @Override
+            public Message postProcessMessage(Message message) throws JMSException, javax.jms.JMSException {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                if (authentication != null && authentication.getCredentials() instanceof String) {
+                    String jwtToken = (String) authentication.getCredentials();
+                    message.setStringProperty("Authorization", "Bearer " + jwtToken);
+                }
+                return message;
+            }
+        });
     }
 }
