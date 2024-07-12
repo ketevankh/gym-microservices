@@ -14,5 +14,5 @@ public class WorkloadRequest {
     private Boolean isActive;
     private LocalDateTime trainingDate;
     private int trainingDuration;
-    private ActionType actionType; // Enum for ADD/DELETE
+    private String actionType;
 }

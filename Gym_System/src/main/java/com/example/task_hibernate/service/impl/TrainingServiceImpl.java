@@ -15,7 +15,10 @@ import com.example.task_hibernate.service.TrainingService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
@@ -30,7 +33,12 @@ import java.util.Optional;
 public class TrainingServiceImpl implements TrainingService {
 
     private final JmsTemplate jmsTemplate;
-    private static final String WORKLOAD_QUEUE = "workload.queue";
+
+    @Value("${spring.jms.template.default-destination}")
+    private String WORKLOAD_QUEUE;
+
+    @Value("${dlq.name}")
+    private final String DLQ="Activemq.DLQ";
 
     private final TrainingRepository trainingRepository;
     private final TraineeRepository traineeRepository;
@@ -121,8 +129,23 @@ public class TrainingServiceImpl implements TrainingService {
             request.setTrainingDate(trainingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         }
         request.setTrainingDuration(trainingDuration);
-        request.setActionType(actionType);
+        request.setActionType(actionType.toString());
 
-       jmsTemplate.convertAndSend(WORKLOAD_QUEUE, request);
+        try {
+            sendMessageToQueue(WORKLOAD_QUEUE, request);
+        } catch (Exception e) {
+            sendMessageToQueue(DLQ, request);
+        }
+    }
+
+    public void sendMessageToQueue(String queue, WorkloadRequest request) {
+        jmsTemplate.convertAndSend(queue, request, msg -> {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.getCredentials() instanceof String) {
+                String jwtToken = (String) authentication.getCredentials();
+                msg.setStringProperty("Authorization", "Bearer " + jwtToken);
+            }
+            return msg;
+        });
     }
 }
