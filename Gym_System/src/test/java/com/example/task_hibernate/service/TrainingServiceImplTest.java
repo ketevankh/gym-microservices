@@ -18,8 +18,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessagePostProcessor;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.ZoneId;
 import java.util.*;
@@ -42,7 +43,7 @@ class TrainingServiceImplTest {
     private TrainerRepository trainerRepository;
 
     @Mock
-    private RestTemplate restTemplate;
+    private JmsTemplate jmsTemplate;
 
     @InjectMocks
     private TrainingServiceImpl trainingService;
@@ -259,23 +260,12 @@ class TrainingServiceImplTest {
         request.setTrainingDuration(trainingDuration);
         request.setActionType(actionType);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<WorkloadRequest> entity = new HttpEntity<>(request, headers);
-
-        // Mock the RestTemplate behavior
-        when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(ResponseEntity.ok("Success"));
-
-        // Invoke the method
         trainingService.sendWorkloadUpdate(trainer, trainingDate, trainingDuration, actionType);
 
-        // Verify interactions and behavior
-        verify(restTemplate, times(1)).postForEntity(anyString(), any(HttpEntity.class), eq(String.class));
+        verify(jmsTemplate, times(1)).convertAndSend(anyString(), any(WorkloadRequest.class), any());
     }
     @Test
     void sendWorkloadUpdate_ExceptionThrown() {
-        // Mock the necessary dependencies and inputs
         Trainer trainer = new Trainer();
         User user = new User();
         user.setUsername("trainerUser");
@@ -296,42 +286,10 @@ class TrainingServiceImplTest {
         request.setTrainingDuration(trainingDuration);
         request.setActionType(actionType);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<WorkloadRequest> entity = new HttpEntity<>(request, headers);
-
-        // Mock the RestTemplate behavior to throw an exception
-        doThrow(new RestClientException("Error occurred")).when(restTemplate).postForEntity(anyString(), any(HttpEntity.class), eq(String.class));
-
-        // Invoke the method and handle the exception
         try {
             trainingService.sendWorkloadUpdate(trainer, trainingDate, trainingDuration, actionType);
         } catch (RestClientException e) {
-            // Expected exception, do nothing
         }
 
-        // Verify that the fallback method was called
-        verify(restTemplate, times(1)).postForEntity(anyString(), any(HttpEntity.class), eq(String.class));
-    }
-
-
-
-
-    @Test
-    void fallbackSendWorkloadUpdate() {
-        Trainer trainer = new Trainer();
-        User user = new User();
-        user.setUsername("trainerUser");
-        trainer.setUser(user);
-        Date trainingDate = new Date();
-        int trainingDuration = 60;
-        ActionType actionType = ActionType.ADD;
-        Throwable throwable = new Throwable("Error");
-
-        trainingService.fallbackSendWorkloadUpdate(trainer, trainingDate, trainingDuration, actionType, throwable);
-
-        // Since the fallback method logs the error, we verify that it completes without exceptions
-        assertDoesNotThrow(() -> trainingService.fallbackSendWorkloadUpdate(trainer, trainingDate, trainingDuration, actionType, throwable));
     }
 }

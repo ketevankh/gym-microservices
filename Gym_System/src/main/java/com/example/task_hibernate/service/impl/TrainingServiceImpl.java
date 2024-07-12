@@ -12,18 +12,12 @@ import com.example.task_hibernate.repository.TraineeRepository;
 import com.example.task_hibernate.repository.TrainerRepository;
 import com.example.task_hibernate.repository.TrainingRepository;
 import com.example.task_hibernate.service.TrainingService;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessagePostProcessor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -117,7 +111,6 @@ public class TrainingServiceImpl implements TrainingService {
         return trainingRepository.findAllTrainingTypes();
     }
 
-    @CircuitBreaker(name = "secondaryMicroservice", fallbackMethod = "fallbackSendWorkloadUpdate")
     public void sendWorkloadUpdate(Trainer trainer, Date trainingDate, int trainingDuration, ActionType actionType) {
         WorkloadRequest request = new WorkloadRequest();
         request.setTrainerUsername(trainer.getUser().getUsername());
@@ -130,16 +123,6 @@ public class TrainingServiceImpl implements TrainingService {
         request.setTrainingDuration(trainingDuration);
         request.setActionType(actionType);
 
-        jmsTemplate.convertAndSend(WORKLOAD_QUEUE, request, new MessagePostProcessor() {
-            @Override
-            public Message postProcessMessage(Message message) throws JMSException, javax.jms.JMSException {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (authentication != null && authentication.getCredentials() instanceof String) {
-                    String jwtToken = (String) authentication.getCredentials();
-                    message.setStringProperty("Authorization", "Bearer " + jwtToken);
-                }
-                return message;
-            }
-        });
+       jmsTemplate.convertAndSend(WORKLOAD_QUEUE, request);
     }
 }

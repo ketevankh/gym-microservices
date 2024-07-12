@@ -4,6 +4,7 @@ import com.example.trainer_workload.model.Trainer;
 import com.example.trainer_workload.model.TrainingSummary;
 import com.example.trainer_workload.repository.TrainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,7 +38,9 @@ public class TrainerServiceImpl implements TrainerService {
         trainerRepository.deleteById(username);
     }
 
+
     @Override
+    @JmsListener(destination = "workload.queue")
     public Trainer handleTrainerWorkload(String username, String firstName, String lastName, boolean isActive, LocalDate trainingDate, int trainingDuration, String actionType) {
         Trainer trainer = trainerRepository.findById(username).orElse(new Trainer());
 
@@ -45,7 +48,6 @@ public class TrainerServiceImpl implements TrainerService {
         trainer.setTrainerFirstName(firstName);
         trainer.setTrainerLastName(lastName);
         trainer.setActive(isActive);
-
 
         TrainingSummary trainingSummary = new TrainingSummary();
         trainingSummary.setTrainingYear(trainingDate.getYear());
