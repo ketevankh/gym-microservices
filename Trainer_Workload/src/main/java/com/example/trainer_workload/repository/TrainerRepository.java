@@ -1,11 +1,11 @@
 package com.example.trainer_workload.repository;
 
-
 import com.example.trainer_workload.model.Trainer;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-@Repository
-public interface TrainerRepository extends JpaRepository<Trainer, String> {
+import java.util.Optional;
+
+public interface TrainerRepository extends MongoRepository<Trainer, String> {
+    Optional<Trainer> findByUsername(String username);
 }
 

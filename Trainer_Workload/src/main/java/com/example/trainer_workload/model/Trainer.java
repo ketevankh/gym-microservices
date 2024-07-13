@@ -1,22 +1,23 @@
 package com.example.trainer_workload.model;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@Entity
+@Document(collection = "trainers")
+@CompoundIndex(def = "{'firstName': 1, 'lastName': 1}", name = "name_index")
+@Getter @Setter
 public class Trainer {
     @Id
-    private String trainerUsername;
-    private String trainerFirstName;
-    private String trainerLastName;
-    private boolean isActive;
-
-    @ElementCollection
-    @CollectionTable(name = "trainer_training_summary", joinColumns = @JoinColumn(name = "trainer_id"))
-    private List<TrainingSummary> trainingSummary = new ArrayList<>();
+    private String id;
+    private String username;
+    private String firstName;
+    private String lastName;
+    private boolean status;
+    private List<YearSummary> years;
 }
 

@@ -258,7 +258,7 @@ class TrainingServiceImplTest {
         request.setIsActive(trainer.getUser().getIsActive());
         request.setTrainingDate(trainingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         request.setTrainingDuration(trainingDuration);
-        request.setActionType(actionType);
+        request.setActionType(actionType.toString());
 
         trainingService.sendWorkloadUpdate(trainer, trainingDate, trainingDuration, actionType);
 
@@ -284,7 +284,7 @@ class TrainingServiceImplTest {
         request.setIsActive(trainer.getUser().getIsActive());
         request.setTrainingDate(trainingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         request.setTrainingDuration(trainingDuration);
-        request.setActionType(actionType);
+        request.setActionType(actionType.toString());
 
         try {
             trainingService.sendWorkloadUpdate(trainer, trainingDate, trainingDuration, actionType);
