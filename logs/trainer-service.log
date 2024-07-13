@@ -128,3 +128,9 @@ This generated password is for development use only. Your security configuration
 2024-07-13T15:28:40.501+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2024-07-13T15:33:40.512+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2024-07-13T15:38:40.521+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:43:40.528+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:48:40.534+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:53:40.548+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:58:40.552+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T16:03:40.566+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T16:08:40.578+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

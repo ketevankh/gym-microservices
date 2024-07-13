@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "trainers")
@@ -18,6 +19,6 @@ public class Trainer {
     private String firstName;
     private String lastName;
     private boolean status;
-    private List<YearSummary> years;
+    private List<YearSummary> years = new ArrayList<>();
 }
 

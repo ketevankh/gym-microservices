@@ -44,10 +44,10 @@ public class TrainerControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         trainer = new Trainer();
-        trainer.setTrainerUsername("john_doe");
-        trainer.setTrainerFirstName("John");
-        trainer.setTrainerLastName("Doe");
-        trainer.setActive(true);
+        trainer.setUsername("john_doe");
+        trainer.setFirstName("John");
+        trainer.setLastName("Doe");
+        trainer.setStatus(true);
     }
 
     @Test
@@ -57,19 +57,13 @@ public class TrainerControllerTest {
                 .thenReturn(trainer);
 
         mockMvc.perform(post("/trainers/workload")
-                        .param("username", "john_doe")
-                        .param("firstName", "John")
-                        .param("lastName", "Doe")
-                        .param("isActive", "true")
-                        .param("trainingDate", "2024-06-01")
-                        .param("trainingDuration", "60")
-                        .param("actionType", "ADD")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\": \"john_doe\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"isActive\": true, \"trainingDate\": \"2024-06-01\", \"trainingDuration\": 60, \"actionType\": \"ADD\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.trainerUsername").value("john_doe"))
-                .andExpect(jsonPath("$.trainerFirstName").value("John"))
-                .andExpect(jsonPath("$.trainerLastName").value("Doe"))
-                .andExpect(jsonPath("$.active").value(true));
+                .andExpect(jsonPath("$.username").value("john_doe"))
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.status").value(true));
     }
 
     @Test
@@ -79,19 +73,13 @@ public class TrainerControllerTest {
                 .thenReturn(trainer);
 
         mockMvc.perform(post("/trainers/workload")
-                        .param("username", "john_doe")
-                        .param("firstName", "John")
-                        .param("lastName", "Doe")
-                        .param("isActive", "true")
-                        .param("trainingDate", "2024-06-01")
-                        .param("trainingDuration", "60")
-                        .param("actionType", "DELETE")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\": \"john_doe\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"isActive\": true, \"trainingDate\": \"2024-06-01\", \"trainingDuration\": 60, \"actionType\": \"DELETE\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.trainerUsername").value("john_doe"))
-                .andExpect(jsonPath("$.trainerFirstName").value("John"))
-                .andExpect(jsonPath("$.trainerLastName").value("Doe"))
-                .andExpect(jsonPath("$.active").value(true));
+                .andExpect(jsonPath("$.username").value("john_doe"))
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.status").value(true));
     }
 
     @Test
@@ -102,10 +90,10 @@ public class TrainerControllerTest {
         mockMvc.perform(get("/trainers/john_doe")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.trainerUsername").value("john_doe"))
-                .andExpect(jsonPath("$.trainerFirstName").value("John"))
-                .andExpect(jsonPath("$.trainerLastName").value("Doe"))
-                .andExpect(jsonPath("$.active").value(true));
+                .andExpect(jsonPath("$.username").value("john_doe"))
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.status").value(true));
     }
 
     @Test
@@ -125,12 +113,12 @@ public class TrainerControllerTest {
 
         mockMvc.perform(post("/trainers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"trainerUsername\": \"john_doe\", \"trainerFirstName\": \"John\", \"trainerLastName\": \"Doe\", \"isActive\": true}"))
+                        .content("{\"username\": \"john_doe\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"status\": true}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.trainerUsername").value("john_doe"))
-                .andExpect(jsonPath("$.trainerFirstName").value("John"))
-                .andExpect(jsonPath("$.trainerLastName").value("Doe"))
-                .andExpect(jsonPath("$.active").value(true));
+                .andExpect(jsonPath("$.username").value("john_doe"))
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.status").value(true));
     }
 
     @Test

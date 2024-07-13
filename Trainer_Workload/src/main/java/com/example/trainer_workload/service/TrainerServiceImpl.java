@@ -1,13 +1,11 @@
 package com.example.trainer_workload.service;
 
-import com.example.trainer_workload.model.MonthSummary;
 import com.example.trainer_workload.model.Trainer;
-import com.example.trainer_workload.model.WorkloadRequest;
 import com.example.trainer_workload.model.YearSummary;
+import com.example.trainer_workload.model.MonthSummary;
+import com.example.trainer_workload.model.WorkloadRequest;
 import com.example.trainer_workload.repository.TrainerRepository;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
@@ -15,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -44,14 +42,15 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public void deleteTrainer(String username) {
-        trainerRepository.deleteById(username);
+        if (trainerRepository.findByUsername(username).isPresent()) {
+            trainerRepository.deleteById(username);
+        }
     }
 
     @Override
     @Transactional
     @JmsListener(destination = "workload.queue")
     public Trainer handleTrainerWorkload(String username, String firstName, String lastName, boolean isActive, LocalDate trainingDate, int trainingDuration, String actionType) {
-        String transactionId = UUID.randomUUID().toString();
         try {
             Trainer trainer = trainerRepository.findByUsername(username).orElse(new Trainer());
             trainer.setUsername(username);
@@ -59,14 +58,19 @@ public class TrainerServiceImpl implements TrainerService {
             trainer.setLastName(lastName);
             trainer.setStatus(isActive);
 
+            if (trainer.getYears() == null) {
+                trainer.setYears(new ArrayList<>());
+            }
+
             if (ACTION_ADD.equalsIgnoreCase(actionType)) {
                 addTrainingSummary(trainer, trainingDate, trainingDuration);
             } else if (ACTION_DELETE.equalsIgnoreCase(actionType)) {
                 deleteTrainingSummary(trainer, trainingDate, trainingDuration);
+            } else {
+                throw new IllegalArgumentException("Invalid action type: " + actionType);
             }
 
-            Trainer savedTrainer = trainerRepository.save(trainer);
-            return savedTrainer;
+            return trainerRepository.save(trainer);
 
         } catch (Exception e) {
             sendToDLQ(username, firstName, lastName, isActive, trainingDate, trainingDuration, actionType);
@@ -86,6 +90,9 @@ public class TrainerServiceImpl implements TrainerService {
                 MonthSummary newMonthSummary = new MonthSummary();
                 newMonthSummary.setMonth(trainingDate.getMonthValue());
                 newMonthSummary.setTrainingsSummaryDuration(trainingDuration);
+                if (yearSummary.getMonths() == null) {
+                    yearSummary.setMonths(new ArrayList<>());
+                }
                 yearSummary.getMonths().add(newMonthSummary);
                 return;
             }
@@ -93,21 +100,21 @@ public class TrainerServiceImpl implements TrainerService {
 
         YearSummary newYearSummary = new YearSummary();
         newYearSummary.setYear(trainingDate.getYear());
-
         MonthSummary newMonthSummary = new MonthSummary();
         newMonthSummary.setMonth(trainingDate.getMonthValue());
         newMonthSummary.setTrainingsSummaryDuration(trainingDuration);
-
-        newYearSummary.setMonths(List.of(newMonthSummary));
+        newYearSummary.setMonths(new ArrayList<>(List.of(newMonthSummary)));
         trainer.getYears().add(newYearSummary);
     }
 
     private void deleteTrainingSummary(Trainer trainer, LocalDate trainingDate, int trainingDuration) {
         for (YearSummary yearSummary : trainer.getYears()) {
             if (yearSummary.getYear() == trainingDate.getYear()) {
-                yearSummary.getMonths().removeIf(monthSummary ->
-                        monthSummary.getMonth() == trainingDate.getMonthValue() &&
-                                monthSummary.getTrainingsSummaryDuration() == trainingDuration);
+                if (yearSummary.getMonths() != null) {
+                    yearSummary.getMonths().removeIf(monthSummary ->
+                            monthSummary.getMonth() == trainingDate.getMonthValue() &&
+                                    monthSummary.getTrainingsSummaryDuration() == trainingDuration);
+                }
                 return;
             }
         }
