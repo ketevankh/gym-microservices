@@ -102,3 +102,29 @@ This generated password is for development use only. Your security configuration
 2024-07-13T13:18:19.479+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2024-07-13T13:23:19.490+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2024-07-13T13:28:19.498+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T13:33:19.504+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T13:38:19.513+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T13:43:19.516+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T13:48:19.527+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T13:59:12.821+04:00  WARN 11540 --- [Trainer_Workload] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=9m28s15ms535µs600ns).
+2024-07-13T14:02:17.540+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:07:17.546+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:12:17.553+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:17:17.568+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:22:17.575+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:27:17.582+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:32:17.588+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:37:17.601+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:42:17.618+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:47:17.629+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:52:17.636+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T14:57:17.646+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:02:17.657+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:07:17.662+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:09:36.682+04:00  WARN 11540 --- [Trainer_Workload] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m52s810ms755µs500ns).
+2024-07-13T15:13:40.469+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:18:40.478+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:23:40.491+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:28:40.501+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:33:40.512+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-07-13T15:38:40.521+04:00  INFO 11540 --- [Trainer_Workload] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

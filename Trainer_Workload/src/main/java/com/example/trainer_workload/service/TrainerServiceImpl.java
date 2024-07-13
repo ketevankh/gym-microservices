@@ -22,8 +22,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TrainerServiceImpl implements TrainerService {
-    private static final Logger transactionLogger = LoggerFactory.getLogger("transaction");
-    private static final Logger operationLogger = LoggerFactory.getLogger("operation");
 
     private final JmsTemplate jmsTemplate;
     private final TrainerRepository trainerRepository;
@@ -54,8 +52,6 @@ public class TrainerServiceImpl implements TrainerService {
     @JmsListener(destination = "workload.queue")
     public Trainer handleTrainerWorkload(String username, String firstName, String lastName, boolean isActive, LocalDate trainingDate, int trainingDuration, String actionType) {
         String transactionId = UUID.randomUUID().toString();
-        transactionLogger.info("Transaction {}: Handling workload for trainer {}", transactionId, username);
-
         try {
             Trainer trainer = trainerRepository.findByUsername(username).orElse(new Trainer());
             trainer.setUsername(username);
@@ -65,19 +61,15 @@ public class TrainerServiceImpl implements TrainerService {
 
             if (ACTION_ADD.equalsIgnoreCase(actionType)) {
                 addTrainingSummary(trainer, trainingDate, trainingDuration);
-                operationLogger.info("Transaction {}: Added training summary for trainer {}", transactionId, username);
             } else if (ACTION_DELETE.equalsIgnoreCase(actionType)) {
                 deleteTrainingSummary(trainer, trainingDate, trainingDuration);
-                operationLogger.info("Transaction {}: Deleted training summary for trainer {}", transactionId, username);
             }
 
             Trainer savedTrainer = trainerRepository.save(trainer);
-            transactionLogger.info("Transaction {}: Trainer record for {} saved successfully", transactionId, username);
             return savedTrainer;
 
         } catch (Exception e) {
             sendToDLQ(username, firstName, lastName, isActive, trainingDate, trainingDuration, actionType);
-            transactionLogger.error("Transaction {}: Error processing workload for trainer {}", transactionId, username, e);
             throw e;
         }
     }
@@ -123,6 +115,5 @@ public class TrainerServiceImpl implements TrainerService {
 
     private void sendToDLQ(String username, String firstName, String lastName, boolean isActive, LocalDate trainingDate, int trainingDuration, String actionType) {
         jmsTemplate.convertAndSend(DLQ, new WorkloadRequest(username, firstName, lastName, isActive, trainingDate, trainingDuration, actionType));
-        operationLogger.info("Sent workload request for trainer {} to DLQ", username);
     }
 }
