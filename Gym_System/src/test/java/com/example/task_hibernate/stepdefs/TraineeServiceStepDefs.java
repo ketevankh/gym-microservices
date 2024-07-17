@@ -1,6 +1,5 @@
 package com.example.task_hibernate.stepdefs;
 
-import com.example.task_hibernate.TaskHibernateApplication;
 import com.example.task_hibernate.config.CucumberSpringConfiguration;
 import com.example.task_hibernate.model.Trainee;
 import com.example.task_hibernate.model.dto.Credentials;
@@ -10,9 +9,7 @@ import com.example.task_hibernate.service.TraineeService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Optional;
