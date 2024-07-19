@@ -8,11 +8,15 @@
         <option value="$PROJECT_DIR$/Trainer_Workload/pom.xml" />
         <option value="$PROJECT_DIR$/EurekaServerApplication/pom.xml" />
         <option value="$PROJECT_DIR$/Eureka_Client_demp/pom.xml" />
+        <option value="$PROJECT_DIR$/Integration_Tests/pom.xml" />
+        <option value="$PROJECT_DIR$/mavenproject/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/Eureka_Client_demp/pom.xml" />
+        <option value="$PROJECT_DIR$/integration_tests/pom.xml" />
+        <option value="$PROJECT_DIR$/to-remove/pom.xml" />
       </set>
     </option>
   </component>
