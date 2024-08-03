@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gym_dev
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - my_network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - my_network
+
+  eureka-server:
+    build: ./EurekaServerApplication
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - my_network
+
+  main-service:
+    build: ./Gym_System
+    container_name: main-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/gym_dev
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://rabbitmq:5672
+      - SPRING_ACTIVEMQ_USER=admin
+      - SPRING_ACTIVEMQ_PASSWORD=admin
+    depends_on:
+      - mysql
+      - rabbitmq
+      - eureka-server
+    networks:
+      - my_network
+
+  report-service:
+    build: ./Trainer_Workload
+    container_name: report-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/gym_dev
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://rabbitmq:5672
+      - SPRING_ACTIVEMQ_USER=admin
+      - SPRING_ACTIVEMQ_PASSWORD=admin
+    depends_on:
+      - mysql
+      - rabbitmq
+      - eureka-server
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
