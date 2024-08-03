@@ -58,7 +58,7 @@ public class TrainerControllerTest {
 
         mockMvc.perform(post("/trainers/workload")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"john_doe\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"isActive\": true, \"trainingDate\": \"2024-06-01\", \"trainingDuration\": 60, \"actionType\": \"ADD\"}"))
+                        .content("{\"trainerUsername\": \"john_doe\", \"trainerFirstName\": \"John\", \"trainerLastName\": \"Doe\", \"isActive\": true, \"trainingDate\": \"2024-06-01\", \"trainingDuration\": 60, \"actionType\": \"ADD\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("john_doe"))
                 .andExpect(jsonPath("$.firstName").value("John"))
@@ -74,7 +74,7 @@ public class TrainerControllerTest {
 
         mockMvc.perform(post("/trainers/workload")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"john_doe\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"isActive\": true, \"trainingDate\": \"2024-06-01\", \"trainingDuration\": 60, \"actionType\": \"DELETE\"}"))
+                        .content("{\"trainerUsername\": \"john_doe\", \"trainerFirstName\": \"John\", \"trainerLastName\": \"Doe\", \"isActive\": true, \"trainingDate\": \"2024-06-01\", \"trainingDuration\": 60, \"actionType\": \"DELETE\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("john_doe"))
                 .andExpect(jsonPath("$.firstName").value("John"))
@@ -113,7 +113,7 @@ public class TrainerControllerTest {
 
         mockMvc.perform(post("/trainers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"john_doe\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"status\": true}"))
+                        .content("{\"username\": \"john_doe\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"isActive\": true}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value("john_doe"))
                 .andExpect(jsonPath("$.firstName").value("John"))

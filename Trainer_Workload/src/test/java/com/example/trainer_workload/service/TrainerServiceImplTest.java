@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -151,8 +150,8 @@ class TrainerServiceImplTest {
         monthSummary.setMonth(7);
         monthSummary.setTrainingsSummaryDuration(2);
 
-        yearSummary.setMonths(List.of(monthSummary));
-        trainer.setYears(List.of(yearSummary));
+        yearSummary.setMonths(new ArrayList<>(List.of(monthSummary)));
+        trainer.setYears(new ArrayList<>(List.of(yearSummary)));
 
         when(trainerRepository.findByUsername("trainer1")).thenReturn(Optional.of(trainer));
         when(trainerRepository.save(any(Trainer.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -190,6 +189,5 @@ class TrainerServiceImplTest {
 
         assertEquals("Invalid action type: INVALID_ACTION", exception.getMessage());
         verify(trainerRepository, never()).save(any(Trainer.class));
-        verify(jmsTemplate, never()).convertAndSend(anyString(), any(WorkloadRequest.class));
     }
 }

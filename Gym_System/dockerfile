@@ -1,0 +1,11 @@
+FROM openjdk:21-jdk-slim
+
+WORKDIR /app
+
+COPY target/Task_Hibernate-0.0.1-SNAPSHOT.jar /app/main-service.jar
+
+ENV INTEGRATIONS_ENABLED=false
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "main-service.jar"]
