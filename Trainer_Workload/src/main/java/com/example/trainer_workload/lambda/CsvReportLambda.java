@@ -22,7 +22,7 @@ public class CsvReportLambda implements RequestHandler<Object, String> {
     private final DynamoDB dynamoDB = new DynamoDB(AmazonDynamoDBClientBuilder.defaultClient());
     private final AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
     private final String tableName = "TrainerInfo";
-    private final String bucketName = "<Your-S3-Bucket-Name>";
+    private final String bucketName = "ketevankhacha-bucket";
 
     @Override
     public String handleRequest(Object input, Context context) {
