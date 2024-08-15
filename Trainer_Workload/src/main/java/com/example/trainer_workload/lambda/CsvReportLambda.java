@@ -11,6 +11,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -19,6 +21,8 @@ import java.util.Iterator;
 
 public class CsvReportLambda implements RequestHandler<Object, String> {
 
+    private static final Logger logger = LoggerFactory.getLogger(CsvReportLambda.class);
+
     private final DynamoDB dynamoDB = new DynamoDB(AmazonDynamoDBClientBuilder.defaultClient());
     private final AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
     private final String tableName = "TrainerInfo";
@@ -26,6 +30,8 @@ public class CsvReportLambda implements RequestHandler<Object, String> {
 
     @Override
     public String handleRequest(Object input, Context context) {
+        logger.info("Lambda executed at: " + java.time.LocalDateTime.now());
+
         Table table = dynamoDB.getTable(tableName);
         ScanSpec scanSpec = new ScanSpec();
         Iterator<Item> iterator = table.scan(scanSpec).iterator();
